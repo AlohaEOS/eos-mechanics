@@ -23,8 +23,6 @@ CONTRACT eosmechanics : public eosio::contract {
             // Only let us run this
             require_auth(_self);
             
-            ramdata_index ramdata(_self, _self.value);
-
             int p;
 
             //eosio::print_f("Mersenne primes:\n");
