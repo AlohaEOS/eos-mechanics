@@ -10,26 +10,27 @@ typedef enum { FALSE=0, TRUE=1 } BOOL;
 // Number of rows to write/read in ram test
 #define RAM_ROWS 75
 
-class benchbp_contract : public eosio::contract {
+using namespace eosio;
+
+CONTRACT eosmechanics : public eosio::contract {
     public:
-        benchbp_contract(account_name self)
-        :eosio::contract(self),
-        ramdata(_self, _self)
-        {}
+        using contract::contract;
 
         /**
          * Simple CPU benchmark that calculates Mersenne prime numbers.
          */
-        void cpu() {
+        [[eosio::action]] void cpu() {
             // Only let us run this
             require_auth(_self);
+            
+            ramdata_index ramdata(_self, _self.value);
 
-            const int counter = CPU_PRIME_MAX;
             int p;
 
             //eosio::print_f("Mersenne primes:\n");
-            for (p = 2; p <= counter; p += 1) {
-                if(is_prime(p) && is_mersenne_prime(p)) {
+            for (p = 2; p <= CPU_PRIME_MAX; p += 1) {
+                if (is_prime(p) && is_mersenne_prime(p)) {
+                    // We need to keep an eye on this to make sure it doesn't get optimized out. So far so good.
                     //eosio::print_f(" %u", p);
                 }
             }
@@ -38,7 +39,9 @@ class benchbp_contract : public eosio::contract {
         /**
          * Simple EOS RAM benchmark which reads and writes a table.
          */
-        void ram() {
+        [[eosio::action]] void ram() {
+            ramdata_index ramdata(_self, _self.value);
+
             // Only let us run this
             require_auth(_self);
 
@@ -67,7 +70,7 @@ class benchbp_contract : public eosio::contract {
         /**
          * Simple EOS Net benchmark which just accepts any string passed in.
          */
-        void net(std::string input) {
+        [[eosio::action]] void net(std::string input) {
             // Only let us run this
             require_auth(_self);
         }
@@ -103,7 +106,7 @@ class benchbp_contract : public eosio::contract {
         }
 
         // @abi table ramdata i64
-        struct ramdata {
+        struct [[eosio::table]] ramdata {
             uint64_t id;
             std::string one;
 
@@ -111,9 +114,8 @@ class benchbp_contract : public eosio::contract {
             EOSLIB_SERIALIZE(ramdata, (id)(one))
         };
 
-        typedef eosio::multi_index<N(ramdata), ramdata> ramdata_table;
-        ramdata_table ramdata;
+        typedef eosio::multi_index<"ramdata"_n, ramdata> ramdata_index;
 
 };
 
-EOSIO_ABI(benchbp_contract, (cpu)(ram)(net))
+EOSIO_DISPATCH(eosmechanics, (cpu)(ram)(net))
