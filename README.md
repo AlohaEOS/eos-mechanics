@@ -1,8 +1,19 @@
 # EOS Mechanics
 
-This is a collection of EOS contracts and utilities in use by the [EOS Mechanics](https://eosmechanics.com/) research group.
+This is a modified version of the code provided by the EOS Mechanics team. The original code can be found [here](https://github.com/AlohaEOS/eos-mechanics).
 
-Please visit us on [Telegram](https://t.me/EOSMechanics) for any feedback or questions.
+Please visit us on [Telegram](https://t.me/eoscr) for any feedback or questions.
+
+## Build Instructions
+This contract is built using the [AntelopeIO CDT v3.1.0](https://github.com/AntelopeIO/cdt/releases/tag/v3.1.0). Before proceding, make sure you have the `cdt` install in your machine.
+
+To build the contract, run the following command:
+
+```bash
+./build.sh
+```
+
+This command will create (if it doesn't exist) a new folder in the root path called `build` and will contain the compiled contract. This also will print out the sha256 hash of the wasm file corresponding to the current code version. You can find the `.abi` and `.wasm` at `build/contracts/eosmechanics/`.
 
 ## Benchmarks
 
