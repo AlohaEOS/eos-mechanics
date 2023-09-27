@@ -86,7 +86,10 @@ CONTRACT eosmechanics : public eosio::contract {
             const int to = sqrt(p);
             int i;
             for (i = 3; i <= to; i += 2) {  
-                if (!((prime = BOOL(p)) % i)) break;
+		if (p % i == 0) {
+		    prime = FALSE;
+		    break;
+		}
             }
             return prime;
         }
